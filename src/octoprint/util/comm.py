@@ -75,7 +75,8 @@ regexes_parameters = dict(
 	floatZ=re.compile(r"(^|[^A-Za-z])[Zz](?P<value>%s)" % regex_float_pattern),
 	intN=re.compile(r"(^|[^A-Za-z])[Nn](?P<value>%s)" % regex_int_pattern),
 	intS=re.compile(r"(^|[^A-Za-z])[Ss](?P<value>%s)" % regex_int_pattern),
-	intT=re.compile(r"(^|[^A-Za-z])[Tt](?P<value>%s)" % regex_int_pattern)
+	intT=re.compile(r"(^|[^A-Za-z])[Tt](?P<value>%s)" % regex_int_pattern),
+	intEOS=re.compile(r"(^|[^A-Za-z])(?P<value>%s)$" % regex_int_pattern)
 )
 """Regexes for parsing various GCODE command parameters."""
 
@@ -1687,6 +1688,7 @@ class MachineCom(object):
 							self._serial.timeout = self._get_communication_timeout_interval()
 
 						self._set_busy_protocol_interval(interval=busy_interval, callback=busyIntervalSet)
+						# self._set_busy_protocol_interval(interval=0, callback=busyIntervalSet)
 
 					if self._state not in (self.STATE_CONNECTING, self.STATE_DETECT_BAUDRATE):
 						continue
@@ -1998,9 +2000,13 @@ class MachineCom(object):
 				elif 'invalid extruder' in lower_line:
 					tool = None
 
-					match = regexes_parameters["intT"].search(line)
+					match = regexes_parameters["intEOS"].search(line)
 					if match:
 						try:
+							bstring = match.group(1)
+							tstring = match.group("value")
+							self._log("Matched <%s> <%s>" % (bstring, tstring))
+
 							tool = int(match.group("value"))
 						except ValueError:
 							pass # should never happen
