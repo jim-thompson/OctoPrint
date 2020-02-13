@@ -3556,10 +3556,10 @@ class MachineCom(object):
 			current_tool = self._currentTool
 			new_tool = int(toolMatch.group("value"))
 
-			if not self._validate_tool(new_tool):
-				self._log("Not queuing T{}, that tool doesn't exist according to the printer profile or "
-				          "was reported as invalid by the firmware".format(new_tool))
-				return None,
+			# if not self._validate_tool(new_tool):
+			# 	self._log("Not queuing T{}, that tool doesn't exist according to the printer profile or "
+			# 	          "was reported as invalid by the firmware".format(new_tool))
+			# 	return None,
 
 			before = self._getGcodeScript("beforeToolChange", replacements=dict(tool=dict(old=current_tool, new=new_tool)))
 			after = self._getGcodeScript("afterToolChange", replacements=dict(tool=dict(old=current_tool, new=new_tool)))
@@ -3580,10 +3580,10 @@ class MachineCom(object):
 		toolMatch = regexes_parameters["intT"].search(cmd)
 		if toolMatch:
 			new_tool = int(toolMatch.group("value"))
-			if not self._validate_tool(new_tool):
-				self._log("Not sending T{}, that tool doesn't exist according to the printer profile or "
-				          "was reported as invalid by the firmware".format(new_tool))
-				return None,
+			# if not self._validate_tool(new_tool):
+			# 	self._log("Not sending T{}, that tool doesn't exist according to the printer profile or "
+			# 	          "was reported as invalid by the firmware".format(new_tool))
+			# 	return None,
 
 	def _gcode_T_sent(self, cmd, cmd_type=None, gcode=None, subcode=None, *args, **kwargs):
 		toolMatch = regexes_parameters["intT"].search(cmd)
